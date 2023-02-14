@@ -1,0 +1,26 @@
+{
+  "name": "part4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mikheil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikhita/part4/issues"
+  },
+  "homepage": "https://github.com/mikhita/part4#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1",
+    "morgan": "^1.10.0"
+  }
+}
