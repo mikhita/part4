@@ -7,7 +7,7 @@ describe('total likes', () => {
       title: 'React patterns',
       author: 'Michael Chan',
       url: 'https://reactpatterns.com/',
-      likes: 7,
+      likes: 17,
       __v: 0
     },
     {
@@ -201,6 +201,20 @@ describe('total likes', () => {
       __v: 0
     }  
   ]
+
+  test('find author with the most blogs', ()=>{
+    const result = listHelper.mostLikes(users)
+    const newObject = 
+      {
+        _id: '5a422a851b54a676234d17f7',
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 17,
+        __v: 0
+      }
+    expect(result).toEqual(newObject)
+  })
 
   test('find author and blog object with the most blogs', ()=>{
     const result = listHelper.mostBlogs(users)
