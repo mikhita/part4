@@ -1,3 +1,6 @@
+const _ = require('lodash')
+
+
 const dummy = (blogs) => {
   if (Array.isArray(blogs)) {
     console.log(`The number of blogs is: ${blogs.length}`)
@@ -19,8 +22,22 @@ const favoriteBlog = (blogList) => {
   return newObj
 }
 
+const mostBlogs = (users) => {
+  const largestUser = _.maxBy(users, user => user.blogs.length)
+
+  const {author, blogs}= largestUser
+
+  const largestObject = {
+    author: author,
+    blogs: blogs.length
+  }
+
+  return largestObject
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
