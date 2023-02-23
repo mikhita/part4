@@ -249,4 +249,5 @@ describe('total likes', () => {
     const result = listHelper.totalLikes(listWithOneBlog)
     expect(result).toBe(5)
   })
+
 })
