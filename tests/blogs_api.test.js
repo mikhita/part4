@@ -63,11 +63,37 @@ test('if likes property is missing, it defaults to 0', async () => {
   const response = await api
     .post('/api/blogs')
     .send(newBlog)
-    .expect(201)
+    .expect(400)
     .expect('Content-Type', /application\/json/)
 
-  expect(response.body.likes).toBeDefined()
-  expect(response.body.likes).toBe(0)
+  expect(response.body.error).toContain('likes are required')
+})
+
+
+test('creating a new blog without title results in 400 Bad Request', async () => {
+  const newBlog = {
+    author: 'John Doe',
+    url: 'http://example.com',
+    likes: 5,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('creating a new blog without url results in 400 Bad Request', async () => {
+  const newBlog = {
+    title: 'New Blog',
+    author: 'John Doe',
+    likes: 5,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 

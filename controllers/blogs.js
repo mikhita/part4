@@ -26,12 +26,18 @@ blogsRouter.get('/', (request, response) => {
 blogsRouter.post('/', (request, response, next) => {
   const body = request.body
   // const blog = new Blog(request.body)
+  if (!body.likes) {
+    return response.status(400).json({ error: 'likes are required' })
+  }
+  if (!body.title || !body.url) {
+    return response.status(400).json({ error: 'Title or URL is missing' })
+  }
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes || 0
+    likes: body.likes
   })
 
   blog
