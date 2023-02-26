@@ -1,30 +1,14 @@
 const mongoose = require('mongoose')
 
-// const personSchema = new mongoose.Schema({
-//   name: {
-//     type: String,
-//     minLength: 3,
-//     required: true,
-//   },
-//   number: {
-//     type: String,
-//     required: true,
-//     validate: {
-//       validator: function (value) {
-//         return (
-//           /^\d{2,3}-\d{6,}$/.test(value) ||
-//           (value.length >= 8 && !value.includes('-'))
-//         )
-//       },
-//       message: 'Invalid phone number format',
-//     },
-//   },
-// })
 const blogSchema = new mongoose.Schema({
   title: String,
   author: String,
   url: String,
-  likes: Number
+  likes: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 blogSchema.set('toJSON', {
