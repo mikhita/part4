@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -21,18 +22,27 @@ blogsRouter.get('/', async (request, response) => {
 //     .catch(error => next(error))
 // })
 
-
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  const user = await User.findById(body.userId)
-  // const blog = new Blog(request.body)
-  if (!body.likes) {
-    return response.status(400).json({ error: 'likes are required' })
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
   }
-  if (!body.title || !body.url) {
-    return response.status(400).json({ error: 'Title or URL is missing' })
-  }
+  const user = await User.findById(decodedToken.id)
+  // if (!body.likes) {
+  //   return response.status(400).json({ error: 'likes are required' })
+  // }
+  // if (!body.title || !body.url) {
+  //   return response.status(400).json({ error: 'Title or URL is missing' })
+  // }
 
   const blog = new Blog({
     title: body.title,
