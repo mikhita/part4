@@ -37,6 +37,7 @@ app.use('/api/login', loginRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
+app.use('/api/blogs', middleware.userExtractor, blogsRouter)
 app.use(morgan('tiny'))
 
 module.exports = app
