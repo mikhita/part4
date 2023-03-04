@@ -33,8 +33,9 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const user = request.user
+  // const user = await User.findById(body.userId)
   const body = request.body
-  // const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   // if (!decodedToken.id) {
   //   return response.status(401).json({ error: 'token invalid' })
   // }
@@ -51,14 +52,14 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: user.id
+    user: user._id
   })
 
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
   
-  response.json(savedBlog)
+  response.status(201).json(savedBlog)
 
   // blog
   //   .save()

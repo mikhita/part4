@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
+const jwt = require('jsonwebtoken')
 
 const api = supertest(app)
 
@@ -33,17 +34,50 @@ test('blogs have id property', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
-test('a valid blog can be added', async () => {
+// test('a valid blog can be added', async () => {
+//   const newBlog = {
+//     title: 'new blog',
+//     author: 'Mikhita',
+//     url: 'bitcamp.ge',
+//     likes: 599
+//   }
+
+//   await api
+//     .post('/api/blogs')
+//     .send(newBlog)
+//     .expect(201)
+//     .expect('Content-Type', /application\/json/)
+
+//   const blogsAtEnd = await helper.blogsInDb()
+//   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+//   const titles = blogsAtEnd.map(n => n.title)
+//   expect(titles).toContain(
+//     'new blog'
+//   )
+// }, 100000)
+
+test('a valid blog can be added with authorization token', async () => {
   const newBlog = {
-    title: 'new blog',
-    author: 'Mikhita',
-    url: 'bitcamp.ge',
-    likes: 599
+    title: 'medium blog2',
+    author: 'MikhitA',
+    url: 'bitcamp.com',
+    likes: 3332,
+    user: {
+      username: 'mikhita',
+      name: 'Superuser',
+      id: '63fde3c9227620fec31d0356'
+    },
+
   }
+
+  const user = await User.findOne({username: 'mikhita'}) // find an existing user
+  const token = jwt.sign({ id: user._id }, process.env.SECRET) // generate a token for the user
 
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `Bearer ${token}`) // include the token in the header
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -115,7 +149,7 @@ test('a blog can be deleted', async () => {
   const titles = blogsAtEnd.map(r => r.title)
 
   expect(titles).not.toContain(blogsToDelete.title)
-})
+}, 100000)
 
 
 test('update a blog post', async () => {
@@ -171,11 +205,12 @@ describe('when there is initially one user in db', () => {
 
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await helper.usersInDb()
+    console.log(usersAtStart)
 
     const newUser = {
       username: 'root',
       name: 'Superuser',
-      password: 'salainen',
+      password: 'mikhita',
     }
 
     const result = await api
@@ -187,6 +222,7 @@ describe('when there is initially one user in db', () => {
     expect(result.body.error).toContain('expected `username` to be unique')
 
     const usersAtEnd = await helper.usersInDb()
+    // expect(usersAtEnd).toHaveLength(usersAtStart.length)
     expect(usersAtEnd).toEqual(usersAtStart)
   })
   
