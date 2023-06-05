@@ -40,9 +40,9 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   //   return response.status(401).json({ error: 'token invalid' })
   // }
   // const user = await User.findById(decodedToken.id)
-  if (!body.likes) {
-    return response.status(400).json({ error: 'likes are required' })
-  }
+  // if (!body.likes) {
+  //   return response.status(400).json({ error: 'likes are required' })
+  // }
   if (!body.title || !body.url) {
     return response.status(400).json({ error: 'Title or URL is missing' })
   }
@@ -89,9 +89,10 @@ blogsRouter.delete('/:id',middleware.userExtractor, async (request, response) =>
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', (request, response) => {
+blogsRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body
-  Blog.findByIdAndUpdate(
+
+  const blog = await Blog.findByIdAndUpdate(
     request.params.id,
     { title, author, url, likes },
     {
@@ -99,11 +100,11 @@ blogsRouter.put('/:id', (request, response) => {
       runValidators: true,
       context: 'query',
     }
-  )
-    .then((updatedBlog) => {
-      response.json(updatedBlog)
-    })
+  ).populate('user', { username: 1, name: 1 })
+
+  response.json(blog)
 })
+
 
 // blogsRouter.delete('/:id', (request, response, next) => {
 //   Blog.findByIdAndRemove(request.params.id)
